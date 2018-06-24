@@ -182,6 +182,20 @@ outfit "Scram Drive"
 	"hyperdrive" 1
 	description "A Scram Drive is a specially designed hyperdrive that works even if your ship is traveling at a much higher speed, at the expense of using more fuel. If you are being pursued by pirates (or just want to get somewhere in a hurry) that extra bit of speed can make a big difference."
 
+
+outfit "Long Haul Drive"
+	category "Systems"
+	cost 90000
+	thumbnail "outfit/scram drive"
+	"mass" 30
+	"outfit space" -30
+	"jump speed" .2
+	"jump delay" 3
+	"jump fuel" 50
+	"hyperdrive" 1
+	description "The Long Haul Drive was developed for ventures either long, not previously explored, or both. Requiring only half as much fuel as a regular Hyperdrive, it pairs nicely with Ramscoop technology to keep your ship roaming the stars almost indefinitely."
+	description "The main drawback, however, is that it requires extremely stable conditions to operate. A brief moment of acute stillness must be achieved before it will activate, and even just a little physical disturbance may ruin your attempt."
+
 outfit "Jump Drive"
 	category "Systems"
 	cost 1000000

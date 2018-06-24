@@ -377,18 +377,18 @@ ship "Behemoth"
 	attributes
 		category "Heavy Freighter"
 		"cost" 10800000
-		"shields" 7600
-		"hull" 6300
+		"shields" 9100
+		"hull" 7500
 		"required crew" 12
 		"bunks" 30
 		"mass" 540
 		"drag" 11.7
 		"heat dissipation" .4
-		"fuel capacity" 600
+		"fuel capacity" 500
 		"cargo space" 490
 		"outfit space" 510
-		"weapon capacity" 280
-		"engine capacity" 90
+		"weapon capacity" 300
+		"engine capacity" 70
 		weapon
 			"blast radius" 140
 			"shield damage" 1400
@@ -402,10 +402,12 @@ ship "Behemoth"
 		"LP144a Battery Pack"
 		"D41-HY Shield Generator"
 		"Small Radar Jammer"
+		"Ramscoop"
 		
-		"X3700 Ion Thruster"
-		"X3200 Ion Steering"
-		"Scram Drive"
+		"Greyhound Plasma Thruster"
+		"Greyhound Plasma Steering"
+		"AR120 Reverse Thruster"
+		"Long Haul Drive"
 		
 	engine -34 154
 	engine 34 154

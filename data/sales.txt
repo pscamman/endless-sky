@@ -418,6 +418,9 @@ outfitter "Pirate Outfits"
 	"Gatling Gun"
 	"Bullet Boxes"
 
+outfitter "Long Haul Drive"
+    "Long Haul Drive"
+
 outfitter "Stack Core"
 	"Stack Core"
 

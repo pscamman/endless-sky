@@ -23950,6 +23950,7 @@ planet Ada
 	outfitter "Lovelace Advanced"
 	outfitter "Common Outfits"
 	outfitter "Ammo North"
+	outfitter "Long Haul Drive"
 	"required reputation" 2
 	bribe 0.1
 	security 0.9
@@ -24383,6 +24384,7 @@ planet Chiron
 	outfitter "Ammo North"
 	outfitter "Lovelace Basics"
 	outfitter "Syndicate Basics"
+	outfitter "Long Haul Drive"
 	bribe 0.02
 	security 0.3
 	tribute 4400
@@ -24906,6 +24908,7 @@ planet Follower
 	outfitter "Common Outfits"
 	outfitter "Deep Sky Basics"
 	outfitter "Ammo North"
+	outfitter "Long Haul Drive"
 	bribe 0.03
 	security 0.4
 	tribute 2400
@@ -26199,6 +26202,7 @@ planet Prime
 	outfitter "Common Outfits"
 	outfitter "Ammo North"
 	outfitter "Lovelace Basics"
+	outfitter "Long Haul Drive"
 	"required reputation" 2
 	bribe 0.05
 	security 0.6
