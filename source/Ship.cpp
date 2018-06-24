@@ -1031,7 +1031,10 @@ void Ship::Move(vector<Visual> &visuals, list<shared_ptr<Flotsam>> &flotsam)
 		static const double HYPER_A = 2.;
 		static const double HYPER_D = 1000.;
 		if(hyperspaceSystem)
+		{
+			jumpDelayElapsed = 0.;
 			fuel -= hyperspaceFuelCost / HYPER_C;
+		}
 		
 		// Create the particle effects for the jump drive. This may create 100
 		// or more particles per ship per turn at the peak of the jump.
@@ -1188,18 +1191,26 @@ void Ship::Move(vector<Visual> &visuals, list<shared_ptr<Flotsam>> &flotsam)
 		
 		return;
 	}
+	const double jumpDelayElapsedOld = jumpDelayElapsed;
 	if(isDisabled)
 	{
 		// If you're disabled, you can't initiate landing or jumping.
 	}
 	else if(commands.Has(Command::LAND) && CanLand())
 		landingPlanet = GetTargetStellar()->GetPlanet();
-	else if(commands.Has(Command::JUMP) && IsReadyToJump())
+	else if(commands.Has(Command::JUMP) && IsReadyToJumpOtherThanDelay())
 	{
-		hyperspaceSystem = GetTargetSystem();
-		isUsingJumpDrive = !attributes.Get("hyperdrive") || !currentSystem->Links().count(hyperspaceSystem);
-		hyperspaceFuelCost = JumpFuel(hyperspaceSystem);
+		jumpDelayElapsed += 1.;
+		if(IsJumpDelayDone())
+		{
+			hyperspaceSystem = GetTargetSystem();
+			isUsingJumpDrive = !attributes.Get("hyperdrive") || !currentSystem->Links().count(hyperspaceSystem);
+			hyperspaceFuelCost = JumpFuel(hyperspaceSystem);
+		}
 	}
+	// If we couldn't reach the point of advancing the elapsed time, drop back to 0
+	if(jumpDelayElapsedOld == jumpDelayElapsed)
+		jumpDelayElapsed = 0.;
 	
 	if(pilotError)
 		--pilotError;
@@ -1940,7 +1951,7 @@ bool Ship::IsUsingJumpDrive() const
 
 
 // Check if this ship is currently able to enter hyperspace to it target.
-bool Ship::IsReadyToJump(bool waitingIsReady) const
+bool Ship::IsReadyToJumpOtherThanDelay(bool waitingIsReady) const
 {
 	// Ships can't jump while waiting for someone else, carried, or if already jumping.
 	if(IsDisabled() || (!waitingIsReady && commands.Has(Command::WAIT))
@@ -1981,6 +1992,19 @@ bool Ship::IsReadyToJump(bool waitingIsReady) const
 	return true;
 }
 
+// Simply check it.
+bool Ship::IsJumpDelayDone() const
+{
+	const double jumpDelay = attributes.Get("jump delay");
+
+	return jumpDelayElapsed > jumpDelay * 60.;
+}
+
+// The public method that checks everything without modifying the delay inbetween the two private methods
+bool Ship::IsReadyToJump(bool waitingIsReady) const
+{
+	return IsReadyToJumpOtherThanDelay(waitingIsReady) && IsJumpDelayDone();
+}
 
 
 // Get this ship's custom swizzle.

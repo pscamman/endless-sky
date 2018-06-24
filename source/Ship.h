@@ -379,6 +379,10 @@ private:
 	void CreateExplosion(std::vector<Visual> &visuals, bool spread = false);
 	// Place a "spark" effect, like ionization or disruption.
 	void CreateSparks(std::vector<Visual> &visuals, const std::string &name, double amount);
+	// Check jump prerequisites other than the jump delay
+	bool IsReadyToJumpOtherThanDelay(bool waitingIsReady = false) const;
+	// Check just the jump delay
+	bool IsJumpDelayDone() const;
 	
 	
 private:
@@ -478,6 +482,9 @@ private:
 	bool isUsingJumpDrive = false;
 	double hyperspaceFuelCost = 0.;
 	Point hyperspaceOffset;
+
+	// How long they've waited, for if they are doing a delayed jump
+	double jumpDelayElapsed = 0.;
 	
 	std::map<const Effect *, int> explosionEffects;
 	unsigned explosionRate = 0;
