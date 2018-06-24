@@ -1198,10 +1198,10 @@ void Ship::Move(vector<Visual> &visuals, list<shared_ptr<Flotsam>> &flotsam)
 	}
 	else if(commands.Has(Command::LAND) && CanLand())
 		landingPlanet = GetTargetStellar()->GetPlanet();
-	else if(commands.Has(Command::JUMP) && IsReadyToJumpOtherThanDelay())
+	else if(commands.Has(Command::JUMP) && IsReadyToJumpOtherThanDelayAndWait())
 	{
 		jumpDelayElapsed += 1.;
-		if(IsJumpDelayDone())
+		if(AreJumpDelayAndWaitDone())
 		{
 			hyperspaceSystem = GetTargetSystem();
 			isUsingJumpDrive = !attributes.Get("hyperdrive") || !currentSystem->Links().count(hyperspaceSystem);
@@ -1951,11 +1951,10 @@ bool Ship::IsUsingJumpDrive() const
 
 
 // Check if this ship is currently able to enter hyperspace to it target.
-bool Ship::IsReadyToJumpOtherThanDelay(bool waitingIsReady) const
+bool Ship::IsReadyToJumpOtherThanDelayAndWait() const
 {
 	// Ships can't jump while waiting for someone else, carried, or if already jumping.
-	if(IsDisabled() || (!waitingIsReady && commands.Has(Command::WAIT))
-			|| hyperspaceCount || !targetSystem || !currentSystem)
+	if(IsDisabled() || hyperspaceCount || !targetSystem || !currentSystem)
 		return false;
 	
 	// Check if the target system is valid and there is enough fuel to jump.
@@ -1992,18 +1991,22 @@ bool Ship::IsReadyToJumpOtherThanDelay(bool waitingIsReady) const
 	return true;
 }
 
-// Simply check it.
-bool Ship::IsJumpDelayDone() const
-{
-	const double jumpDelay = attributes.Get("jump delay");
 
-	return jumpDelayElapsed > jumpDelay * 60.;
+
+// Simply check it.
+bool Ship::AreJumpDelayAndWaitDone(bool waitingIsReady) const
+{
+	double jumpDelay = attributes.Get("jump delay");
+
+	return jumpDelayElapsed > jumpDelay * 60. && (!commands.Has(Command::WAIT) || waitingIsReady);
 }
+
+
 
 // The public method that checks everything without modifying the delay inbetween the two private methods
 bool Ship::IsReadyToJump(bool waitingIsReady) const
 {
-	return IsReadyToJumpOtherThanDelay(waitingIsReady) && IsJumpDelayDone();
+	return IsReadyToJumpOtherThanDelayAndWait() && AreJumpDelayAndWaitDone(waitingIsReady);
 }
 
 

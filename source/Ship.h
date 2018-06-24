@@ -380,9 +380,9 @@ private:
 	// Place a "spark" effect, like ionization or disruption.
 	void CreateSparks(std::vector<Visual> &visuals, const std::string &name, double amount);
 	// Check jump prerequisites other than the jump delay
-	bool IsReadyToJumpOtherThanDelay(bool waitingIsReady = false) const;
+	bool IsReadyToJumpOtherThanDelayAndWait() const;
 	// Check just the jump delay
-	bool IsJumpDelayDone() const;
+	bool AreJumpDelayAndWaitDone(bool waitingIsReady = false) const;
 	
 	
 private:
