@@ -387,7 +387,7 @@ ship "Behemoth"
 		"fuel capacity" 500
 		"cargo space" 490
 		"outfit space" 510
-		"weapon capacity" 300
+		"weapon capacity" 280
 		"engine capacity" 70
 		weapon
 			"blast radius" 140
@@ -395,12 +395,12 @@ ship "Behemoth"
 			"hull damage" 700
 			"hit force" 2100
 	outfits
-		"Heavy Laser Turret" 4
+		"Proton Turret" 4
 		"Heavy Anti-Missile Turret" 2
 		
 		"NT-200 Nucleovoltaic"
 		"LP144a Battery Pack"
-		"D41-HY Shield Generator"
+		"D94-YV Shield Generator"
 		"Small Radar Jammer"
 		"Ramscoop"
 		
@@ -408,6 +408,7 @@ ship "Behemoth"
 		"Greyhound Plasma Steering"
 		"AR120 Reverse Thruster"
 		"Long Haul Drive"
+		"Cooling Ducts"
 		
 	engine -34 154
 	engine 34 154

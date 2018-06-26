@@ -382,7 +382,7 @@ private:
 	// Check jump prerequisites other than the jump delay
 	bool IsReadyToJumpOtherThanDelayAndWait() const;
 	// Check just the jump delay
-	bool AreJumpDelayAndWaitDone(bool waitingIsReady = false) const;
+	bool JumpDelayAndWaitAreDone(bool waitingIsReady = false) const;
 	
 	
 private:

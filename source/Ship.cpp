@@ -1201,7 +1201,7 @@ void Ship::Move(vector<Visual> &visuals, list<shared_ptr<Flotsam>> &flotsam)
 	else if(commands.Has(Command::JUMP) && IsReadyToJumpOtherThanDelayAndWait())
 	{
 		jumpDelayElapsed += 1.;
-		if(AreJumpDelayAndWaitDone())
+		if(JumpDelayAndWaitAreDone())
 		{
 			hyperspaceSystem = GetTargetSystem();
 			isUsingJumpDrive = !attributes.Get("hyperdrive") || !currentSystem->Links().count(hyperspaceSystem);
@@ -1950,63 +1950,10 @@ bool Ship::IsUsingJumpDrive() const
 
 
 
-// Check if this ship is currently able to enter hyperspace to it target.
-bool Ship::IsReadyToJumpOtherThanDelayAndWait() const
-{
-	// Ships can't jump while waiting for someone else, carried, or if already jumping.
-	if(IsDisabled() || hyperspaceCount || !targetSystem || !currentSystem)
-		return false;
-	
-	// Check if the target system is valid and there is enough fuel to jump.
-	double fuelCost = JumpFuel(targetSystem);
-	if(!fuelCost || fuel < fuelCost)
-		return false;
-	
-	Point direction = targetSystem->Position() - currentSystem->Position();
-	bool isJump = !attributes.Get("hyperdrive") || !currentSystem->Links().count(targetSystem);
-	double scramThreshold = attributes.Get("scram drive");
-	
-	// The ship can only enter hyperspace if it is traveling slowly enough
-	// and pointed in the right direction.
-	if(!isJump && scramThreshold)
-	{
-		double deviation = fabs(direction.Unit().Cross(velocity));
-		if(deviation > scramThreshold)
-			return false;
-	}
-	else if(velocity.Length() > attributes.Get("jump speed"))
-		return false;
-	
-	if(!isJump)
-	{
-		// Figure out if we're within one turn step of facing this system.
-		bool left = direction.Cross(angle.Unit()) < 0.;
-		Angle turned = angle + TurnRate() * (left - !left);
-		bool stillLeft = direction.Cross(turned.Unit()) < 0.;
-	
-		if(left == stillLeft)
-			return false;
-	}
-	
-	return true;
-}
-
-
-
-// Simply check it.
-bool Ship::AreJumpDelayAndWaitDone(bool waitingIsReady) const
-{
-	double jumpDelay = attributes.Get("jump delay");
-
-	return jumpDelayElapsed > jumpDelay * 60. && (!commands.Has(Command::WAIT) || waitingIsReady);
-}
-
-
-
 // The public method that checks everything without modifying the delay inbetween the two private methods
 bool Ship::IsReadyToJump(bool waitingIsReady) const
 {
-	return IsReadyToJumpOtherThanDelayAndWait() && AreJumpDelayAndWaitDone(waitingIsReady);
+	return IsReadyToJumpOtherThanDelayAndWait() && JumpDelayAndWaitAreDone(waitingIsReady);
 }
 
 
@@ -3046,4 +2993,62 @@ void Ship::CreateSparks(vector<Visual> &visuals, const string &name, double amou
 		if(GetMask().Contains(point, Angle()))
 			visuals.emplace_back(*effect, angle.Rotate(point) + position, velocity, angle);
 	}
+}
+
+
+
+// Check if this ship is currently able to enter hyperspace to it target.
+bool Ship::IsReadyToJumpOtherThanDelayAndWait() const
+{
+	// Ships can't jump while waiting for someone else, carried, or if already jumping.
+	if(IsDisabled() || hyperspaceCount || !targetSystem || !currentSystem)
+		return false;
+
+	// Check if the target system is valid and there is enough fuel to jump.
+	double fuelCost = JumpFuel(targetSystem);
+	if(!fuelCost || fuel < fuelCost)
+		return false;
+
+	Point direction = targetSystem->Position() - currentSystem->Position();
+	bool isJump = !attributes.Get("hyperdrive") || !currentSystem->Links().count(targetSystem);
+	double scramThreshold = attributes.Get("scram drive");
+
+	// The ship can only enter hyperspace if it is traveling slowly enough
+	// and pointed in the right direction.
+	if(!isJump && scramThreshold)
+	{
+		double deviation = fabs(direction.Unit().Cross(velocity));
+		if(deviation > scramThreshold)
+			return false;
+	}
+	else if(velocity.Length() > attributes.Get("jump speed"))
+		return false;
+
+	if(!isJump)
+	{
+		// Figure out if we're within one turn step of facing this system.
+		bool left = direction.Cross(angle.Unit()) < 0.;
+		Angle turned = angle + TurnRate() * (left - !left);
+		bool stillLeft = direction.Cross(turned.Unit()) < 0.;
+
+		if(left == stillLeft)
+			return false;
+	}
+
+	return true;
+}
+
+
+
+// Only check jump delay if doing a non jump drive, non scram drive hyperspace.
+bool Ship::JumpDelayAndWaitAreDone(bool waitingIsReady) const
+{
+	double jumpDelay = attributes.Get("jump delay");
+	double scramDrive = attributes.Get("scram drive");
+
+	bool notWaiting = (!commands.Has(Command::WAIT) || waitingIsReady);
+	bool willUseJumpDrive = !attributes.Get("hyperdrive") || !currentSystem->Links().count(GetTargetSystem());
+	bool delayDone =  jumpDelayElapsed > jumpDelay * 60.;
+
+	return notWaiting && (willUseJumpDrive || scramDrive || delayDone);
 }
